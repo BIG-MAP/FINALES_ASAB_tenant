@@ -87,7 +87,7 @@ def update_vial_status(
 ########################################################################################
 
 # Prepare the hardware for operation
-setupData = CetoniDevice_action.prepareRun(graphSave=True, graphShow=False, refPos=False)
+setupData = CetoniDevice_action.prepareRun(graphSave=True, graphShow=False, refPos=True)
 
 # Copy the initial information to the run folder
 live_config_path = str(Path(conf['runFolder']).joinpath('inputs', 'live_config'))
@@ -834,5 +834,4 @@ for user in ASAB_tenant.operators + [ASAB_tenant.tenant_user]:
 
 if __name__ == "__main__":
 
-    ASAB_tenant.tenant_object_to_json()
-    # ASAB_tenant.run()
+    ASAB_tenant.run()
