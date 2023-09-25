@@ -206,12 +206,12 @@ def get_rating_mix(mixRatio_requested:dict, mixRatio_actual:dict):
     deviation = np.sqrt(np.sum((mixRatio_requested - mixRatio_actual)**2))
     mix_requested = np.sqrt(np.sum((mixRatio_requested)**2))
     error_fraction = deviation/mix_requested
-    print("ERROR_FRACTION\n", error_fraction)
+    print("ERROR_FRACTION_MIX\n", error_fraction)
     if error_fraction >= 1.:
         quality_rating = 0.0
     else:
         quality_rating = np.floor((1. - error_fraction) * 5.)
-    print("QUALITY_RATING\n", quality_rating)
+    print("QUALITY_RATING_MIX\n", quality_rating)
     logger_ASAB_tenant.info(f"quality_rating_mix: \n {quality_rating}")
     return quality_rating
 
@@ -226,12 +226,12 @@ def get_rating_EIS(info:pd.DataFrame):
     error_avg = RMSE_avg + fit_error_RMSE_avg
 
     error_fraction = error_avg / average_conductivity
-    print("ERROR_FRACTION\n", error_fraction)
+    print("ERROR_FRACTION_EIS\n", error_fraction)
     if error_fraction >= 1.:
         quality_rating = 0.0
     else:
         quality_rating = np.floor((1. - error_fraction) * 5.)
-    print("QUALITY_RATING\n", quality_rating)
+    print("QUALITY_RATING_EIS\n", quality_rating)
     logger_ASAB_tenant.info(f"quality_rating_EIS: \n {quality_rating}")
     return quality_rating
 
@@ -353,6 +353,7 @@ def conductivity_measurement(
     print("QUALITY_RATING_MIX\n", quality_rating_mix)
     
     for i in range(repeats):
+        subsample_name = f"{sample_name}_{i}"
         actualFlows = CetoniDevice_action.provideSample(
                 measurementtype="electrochemistry",
                 sample_node="M1.0",
@@ -369,7 +370,7 @@ def conductivity_measurement(
 
         logger_ASAB_tenant.info(f"EIS measurement of sample {sample_ID} in progress...")
         Palmsens_action.measure(callback_func=None,
-            sampleName=sample_name,
+            sampleName=subsample_name,
             method=eis_method,
             parameters=method_params,
             save_folder=conf["PalmsensDriver"]["savepath_raw"]
@@ -377,7 +378,7 @@ def conductivity_measurement(
 
         logger_ASAB_tenant.info(f"Collection of data for sample {sample_ID} in progress...")
         eis_data = Palmsens_action.retrieveData(
-            sampleName=sample_name,
+            sampleName=subsample_name,
             method=eis_method,
             save_folder=conf["PalmsensDriver"]["savepath_raw"]
         )
@@ -426,7 +427,7 @@ def conductivity_measurement(
         analysis_EIS.perform_all_actions(
             str(analysis_savepath),
             plots = analysis_plots,
-            optional_name = f"{sample_name}"
+            optional_name = f"{subsample_name}"
         )
 
         # Get the conductivity value form the output of MADAP
@@ -435,7 +436,7 @@ def conductivity_measurement(
         while result_filepath == "":
             time.sleep(1)
             for file in path_glob:
-                if sample_name in str(file): # Should work as long as the sample_name is a unique identifier
+                if subsample_name in str(file): # Should work as long as the sample_name is a unique identifier
                     result_filepath = file
         with open(result_filepath, "r") as analysis_file:
             analyzed_data = json.load(analysis_file)
@@ -485,7 +486,7 @@ def conductivity_measurement(
         extension="py",
         data=f"result = {str(results)}")
 
-    # Drain the sample and clean the measuring 
+    # Drain the sample and clean the measuring cell
     logger_ASAB_tenant.info(f"Cleaning after sample {sample_ID} in progress...")
     CetoniDevice_action.clean(
         medium="Solvent",
@@ -494,15 +495,14 @@ def conductivity_measurement(
         valvesDict=valvesDict,
         nodes=["electrochemistryIN"],
         repeats=1,
-        goToRef=True)
+        goToRef=False)
     CetoniDevice_action.clean(
-        medium="ambient",
-        pumps=["F0.0"],
+        medium="pressurizedGas",
         pumpsDict=pumpsDict,
         valvesDict=valvesDict,
         nodes=["electrochemistryIN"],
         repeats=1,
-        goToRef=True)
+        goToRef=False)
 
     return results
 
@@ -661,7 +661,7 @@ def prepare_results_ASAB(request:dict, data:Any):
         output = {
             "run_info": run_info,
             "conductivity": {
-                "values": [data["conductivity"]],
+                "values": data["conductivity"],
                 "temperature": data["temperature"],
                 "meta": {
                     "success": True,
