@@ -163,7 +163,7 @@ cython_debug/
 **/other_files/
 **/Results/
 **/Notes/
-**/Runs/
+**/Runs*/
 **/**/*_config.py
 *.chemicalsDict.py
 *.graph_positions.py
