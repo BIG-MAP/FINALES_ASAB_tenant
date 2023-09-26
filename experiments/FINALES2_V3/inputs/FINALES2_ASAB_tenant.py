@@ -87,7 +87,7 @@ def update_vial_status(
 ########################################################################################
 
 # Prepare the hardware for operation
-setupData = CetoniDevice_action.prepareRun(graphSave=True, graphShow=False, refPos=True)
+setupData = CetoniDevice_action.prepareRun(graphSave=True, graphShow=False, refPos=False)
 
 # Copy the initial information to the run folder
 live_config_path = str(Path(conf['runFolder']).joinpath('inputs', 'live_config'))
@@ -424,38 +424,50 @@ def conductivity_measurement(
             )
 
         logger_ASAB_tenant.info(f"Analysis of EIS data for sample {sample_ID} in progress...")
-        analysis_EIS.perform_all_actions(
-            str(analysis_savepath),
-            plots = analysis_plots,
-            optional_name = f"{subsample_name}"
-        )
+        try:
+            analysis_EIS.perform_all_actions(
+                str(analysis_savepath),
+                plots = analysis_plots,
+                optional_name = f"{subsample_name}"
+            )
 
-        # Get the conductivity value form the output of MADAP
-        result_filepath = ""
-        path_glob = list(analysis_savepath.joinpath('data').glob("*.json"))
-        while result_filepath == "":
-            time.sleep(1)
-            for file in path_glob:
-                if subsample_name in str(file): # Should work as long as the sample_name is a unique identifier
-                    result_filepath = file
-        with open(result_filepath, "r") as analysis_file:
-            analyzed_data = json.load(analysis_file)
+            # Get the conductivity value form the output of MADAP
+            result_filepath = ""
+            path_glob = list(analysis_savepath.joinpath('data').glob("*.json"))
+            while result_filepath == "":
+                time.sleep(1)
+                for file in path_glob:
+                    if subsample_name in str(file): # Should work as long as the sample_name is a unique identifier
+                        result_filepath = file
+            with open(result_filepath, "r") as analysis_file:
+                analyzed_data = json.load(analysis_file)
 
-        analysis_result = pd.DataFrame(
-            {
-               "resistivity / Ohm": analyzed_data["Parameters"][0],
-               "RMSE_fit": analyzed_data["RMSE_fit_error"],
-               "conductivity_MADAP / S/cm": analyzed_data["conductivity [S/cm]"],
-               "conductivity / S/m": analyzed_data["conductivity [S/cm]"]*100.
-            },
-            index=[i]
-        )
+            analysis_result = pd.DataFrame(
+                {
+                "resistivity / Ohm": analyzed_data["Parameters"][0],
+                "RMSE_fit": analyzed_data["RMSE_fit_error"],
+                "conductivity_MADAP / S/cm": analyzed_data["conductivity [S/cm]"],
+                "conductivity / S/m": analyzed_data["conductivity [S/cm]"]*100.
+                },
+                index=[i]
+            )
 
-        logger_ASAB_tenant.info(f"analysis_result: \n {analysis_result}")
+            logger_ASAB_tenant.info(f"analysis_result: \n {analysis_result}")
 
-        conductivity_result_info = pd.concat([conductivity_result_info, analysis_result], ignore_index=False, axis=0)
+            conductivity_result_info = pd.concat([conductivity_result_info, analysis_result], ignore_index=False, axis=0)
+        except ValueError:
+            continue
+       
+    # If no conductivity result was obtained
+    if len(conductivity_result_info) == 0:
+        quality_rating_EIS = 0.0
+        conductivity_result = []
+        success = False
+    else:
+        quality_rating_EIS = get_rating_EIS(info = conductivity_result_info)
+        conductivity_result = conductivity_result_info["conductivity / S/m"].to_list()
+        success = True
 
-    quality_rating_EIS = get_rating_EIS(info = conductivity_result_info)
     print("QUALITY_RATING_EIS\n", quality_rating_EIS)
 
     quality_rating = np.floor((quality_rating_mix + quality_rating_EIS)/2.)
@@ -470,10 +482,10 @@ def conductivity_measurement(
         "flows_actual": flows_actual,
         "pumps_flows": pumpsFlows,
         "actual_flows": actualFlows,
-        "conductivity": conductivity_result_info["conductivity / S/m"].to_list(),
+        "conductivity": conductivity_result,
         "batch_ID": batch_ID,
         "temperature": T_cell_housing,
-        "success": True,
+        "success": success,
         "quality_rating": quality_rating
         }
 
