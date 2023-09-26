@@ -5,6 +5,7 @@ import pathlib
 from itertools import combinations
 import json
 from pathlib import Path
+from numpy.lib.function_base import average
 import pandas as pd
 import numpy as np
 import time
@@ -216,21 +217,30 @@ def get_rating_mix(mixRatio_requested:dict, mixRatio_actual:dict):
     return quality_rating
 
 def get_rating_EIS(info:pd.DataFrame):
+    # Account for the number of datapoints collected (only valid for 3 individual measurements)
+    length_contribution = 1. - (len(info.index)/3.)
     for i in info.index:
         info.at[(i, "error_conductivity / S/cm")] = abs(- conf["electrochemistry"]["cell_constant"] / (info.at[(i, "resistivity / Ohm")]**2.)) * info.at[(i, "RMSE_fit")] # This focuses only on the resistance R0 in R0-CPE1, which is relevant for the calculation of the conductivity
+    print("INFO_ERR_COND", info.at[(i, "error_conductivity / S/cm")])
 
     average_conductivity = info["conductivity_MADAP / S/cm"].sum() / len(info["conductivity_MADAP / S/cm"])
+    print("AVG_COND", average_conductivity)
     sum_of_squares = np.sum([(info.at[(k, "conductivity_MADAP / S/cm")] - average_conductivity)**2. for k in info.index])
+    print("SUM_OF_SQUARES", sum_of_squares)
     RMSE_avg = np.sqrt(sum_of_squares)
+    print("RMSE_AVG", RMSE_avg)
     fit_error_RMSE_avg = np.sum([((sum_of_squares)**(-0.5) * (info.at[(l, "conductivity_MADAP / S/cm")] - average_conductivity)) * info.at[(l, "error_conductivity / S/cm")] for l in info.index])
+    print("fit_error_RMSE_avg", fit_error_RMSE_avg)
     error_avg = RMSE_avg + fit_error_RMSE_avg
+    print("ERROR_AVG", error_avg)
 
     error_fraction = error_avg / average_conductivity
     print("ERROR_FRACTION_EIS\n", error_fraction)
     if error_fraction >= 1.:
         quality_rating = 0.0
     else:
-        quality_rating = np.floor((1. - error_fraction) * 5.)
+        quality_rating = np.floor((1. - error_fraction - length_contribution) * 5.)
+    
     print("QUALITY_RATING_EIS\n", quality_rating)
     logger_ASAB_tenant.info(f"quality_rating_EIS: \n {quality_rating}")
     return quality_rating
