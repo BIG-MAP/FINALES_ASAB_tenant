@@ -467,7 +467,9 @@ def conductivity_measurement(
             conductivity_result_info = pd.concat([conductivity_result_info, analysis_result], ignore_index=False, axis=0)
         except ValueError:
             continue
-       
+
+    logger_ASAB_tenant.info(msg=f"conductivity_result_info: \n {conductivity_result_info}")
+
     # If no conductivity result was obtained
     if len(conductivity_result_info) == 0:
         quality_rating_EIS = 0.0
