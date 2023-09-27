@@ -5,7 +5,6 @@ import pathlib
 from itertools import combinations
 import json
 from pathlib import Path
-from numpy.lib.function_base import average
 import pandas as pd
 import numpy as np
 import time
