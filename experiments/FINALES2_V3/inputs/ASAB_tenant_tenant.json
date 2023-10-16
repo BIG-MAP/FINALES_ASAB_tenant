@@ -24,21 +24,6 @@
             },
             {
               "chemical": {
-                "SMILES": "CCOC(=O)OC",
-                "InChIKey": "JBTWLSYIZRCDFO-UHFFFAOYSA-N"
-              },
-              "fraction": [
-                {
-                  "min": 0.35,
-                  "max": 1.0
-                }
-              ],
-              "fraction_type": [
-                "molPerMol"
-              ]
-            },
-            {
-              "chemical": {
                 "SMILES": "[Li+].F[P-](F)(F)(F)(F)F",
                 "InChIKey": "AXPLOJNSKRXQPA-UHFFFAOYSA-N"
               },
@@ -51,13 +36,28 @@
               "fraction_type": [
                 "molPerMol"
               ]
+            },
+            {
+              "chemical": {
+                "SMILES": "CCOC(=O)OC",
+                "InChIKey": "JBTWLSYIZRCDFO-UHFFFAOYSA-N"
+              },
+              "fraction": [
+                {
+                  "min": 0.4,
+                  "max": 1.0
+                }
+              ],
+              "fraction_type": [
+                "molPerMol"
+              ]
             }
           ]
         ],
         "temperature": [
           {
-            "min": 301.4,
-            "max": 301.4
+            "min": 299.65,
+            "max": 299.65
           }
         ]
       }
@@ -85,13 +85,13 @@
             },
             {
               "chemical": {
-                "SMILES": "CCOC(=O)OC",
-                "InChIKey": "JBTWLSYIZRCDFO-UHFFFAOYSA-N"
+                "SMILES": "[Li+].F[P-](F)(F)(F)(F)F",
+                "InChIKey": "AXPLOJNSKRXQPA-UHFFFAOYSA-N"
               },
               "fraction": [
                 {
-                  "min": 0.35,
-                  "max": 1.0
+                  "min": 0.0,
+                  "max": 0.12
                 }
               ],
               "fraction_type": [
@@ -100,13 +100,13 @@
             },
             {
               "chemical": {
-                "SMILES": "[Li+].F[P-](F)(F)(F)(F)F",
-                "InChIKey": "AXPLOJNSKRXQPA-UHFFFAOYSA-N"
+                "SMILES": "CCOC(=O)OC",
+                "InChIKey": "JBTWLSYIZRCDFO-UHFFFAOYSA-N"
               },
               "fraction": [
                 {
-                  "min": 0.0,
-                  "max": 0.12
+                  "min": 0.4,
+                  "max": 1.0
                 }
               ],
               "fraction_type": [

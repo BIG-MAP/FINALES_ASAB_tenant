@@ -146,7 +146,7 @@ def get_chemicals_limits(solutionsDict:dict, pumpsDict:dict, chemicalsDict:dict)
 
             fraction_max = fractions_max.get(chemical, 0.0)
             if chemicalsDict[chemical].name == "EMC":
-                fraction_min = 0.35 # based on https://iopscience.iop.org/article/10.1149/1.1393419/pdf figure 3 at 20 °C;
+                fraction_min = 0.4 # updated on 16.10.2023 to avoid the code requesting a formulation at the limit and delivering something different #0.35 # based on https://iopscience.iop.org/article/10.1149/1.1393419/pdf figure 3 at 20 °C;
                 # the actual acceptable fraction should be lower due to the addition of LiPF6, so this is only a rough estimate
             else:
                 fraction_min = 0.0
@@ -838,7 +838,7 @@ ASAB_tenant = Tenant(
     end_run_time = tenant_config["end_run_time"],
     operators = [User(**tenant_config["operator"])],
     tenant_user = User(**tenant_config["tenant_user"]),
-    tenant_uuid = "4bec53a6-6bee-47a9-8fe9-61117bc5de49"
+    tenant_uuid = "af875e40-d540-4998-9acf-0d34c5faab72"
 )
 
 logger_ASAB_tenant.info(f"general metadata: \n {ASAB_tenant.general_meta}")
@@ -856,5 +856,5 @@ for user in ASAB_tenant.operators + [ASAB_tenant.tenant_user]:
 
 
 if __name__ == "__main__":
-
+    # ASAB_tenant.tenant_object_to_json()
     ASAB_tenant.run()
