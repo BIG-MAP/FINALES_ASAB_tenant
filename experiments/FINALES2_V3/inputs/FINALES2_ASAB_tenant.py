@@ -87,7 +87,7 @@ def update_vial_status(
 ########################################################################################
 
 # Prepare the hardware for operation
-setupData = CetoniDevice_action.prepareRun(graphSave=True, graphShow=False, refPos=False)
+setupData = CetoniDevice_action.prepareRun(graphSave=True, graphShow=False, refPos=True)
 
 # Copy the initial information to the run folder
 live_config_path = str(Path(conf['runFolder']).joinpath('inputs', 'live_config'))
