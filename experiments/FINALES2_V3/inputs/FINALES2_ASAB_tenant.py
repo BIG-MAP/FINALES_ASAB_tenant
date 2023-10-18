@@ -87,7 +87,7 @@ def update_vial_status(
 ########################################################################################
 
 # Prepare the hardware for operation
-setupData = CetoniDevice_action.prepareRun(graphSave=True, graphShow=False, refPos=True)
+setupData = CetoniDevice_action.prepareRun(graphSave=True, graphShow=False, refPos=False)
 
 # Copy the initial information to the run folder
 live_config_path = str(Path(conf['runFolder']).joinpath('inputs', 'live_config'))
@@ -464,7 +464,8 @@ def conductivity_measurement(
             logger_ASAB_tenant.info(f"analysis_result: \n {analysis_result}")
 
             conductivity_result_info = pd.concat([conductivity_result_info, analysis_result], ignore_index=False, axis=0)
-        except ValueError:
+        except ValueError as ve:
+            logger_ASAB_tenant.info(msg=f"{ve.__context__}\n{ve.__traceback__}\n{ve.__cause__}")
             continue
 
     logger_ASAB_tenant.info(msg=f"conductivity_result_info: \n {conductivity_result_info}")
@@ -623,7 +624,7 @@ def run_ASAB(input_request:RequestInfo):
     print("\n request_ID", request_ID, "\n method", method, "\n parameters", parameters)
     sample_name = str(uuid4())
 
-    logger_ASAB_tenant.info(f"request ID: {sample_name}")
+    logger_ASAB_tenant.info(f"{request_ID}: {sample_name}")
 
     if method=="two_electrode":
             result = conductivity_measurement(parameters=parameters, sample_name=sample_name, request_ID=request_ID)
