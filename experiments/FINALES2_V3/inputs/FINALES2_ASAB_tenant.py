@@ -601,7 +601,7 @@ def formulate(parameters:dict, request_ID: str, sample_name:str) -> dict:
     # Save the output
     saveToFile(
         folder=str(Path(conf["runFolder"]).joinpath("Results")),
-        filename=f"{sample_name}_{sample_ID}_electrolyte_flow",
+        filename=f"{sample_ID}_electrolyte_flow",
         extension="py",
         data=str(results))
     
