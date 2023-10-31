@@ -839,7 +839,7 @@ ASAB_tenant = Tenant(
     end_run_time = tenant_config["end_run_time"],
     operators = [User(**tenant_config["operator"])],
     tenant_user = User(**tenant_config["tenant_user"]),
-    tenant_uuid = "af875e40-d540-4998-9acf-0d34c5faab72"
+    tenant_uuid = "05d79770-1c15-4146-8234-e6187df29559"
 )
 
 logger_ASAB_tenant.info(f"general metadata: \n {ASAB_tenant.general_meta}")
