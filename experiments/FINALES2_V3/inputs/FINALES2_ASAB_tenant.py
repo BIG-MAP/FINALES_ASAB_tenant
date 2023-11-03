@@ -79,6 +79,17 @@ def update_vial_status(
         ):
     live_config = get_live_config(logger, filepath=config_filepath, config_var=config_var)
     live_config["vial_status"][vial].append((datetime.now().strftime("%Y_%m_%d-%H_%m_%S"), new_status))
+    
+    folder = str(config_filepath.parent)
+    filename = config_filepath.name.split(".")[0]
+    extension = config_filepath.name.split(".")[1]
+    saveToFile(
+        folder=folder,
+        filename=filename,
+        extension=extension,
+        data=f"{config_var} = {str(live_config)}"
+    )
+
     logger.info(f"Updated status of {vial} to be {new_status}.")
 
 
