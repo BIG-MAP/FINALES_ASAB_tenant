@@ -80,9 +80,9 @@ def update_vial_status(
     live_config = get_live_config(logger, filepath=config_filepath, config_var=config_var)
     live_config["vial_status"][vial].append((datetime.now().strftime("%Y_%m_%d-%H_%m_%S"), new_status))
     
-    folder = str(config_filepath.parent)
-    filename = config_filepath.name.split(".")[0]
-    extension = config_filepath.name.split(".")[1]
+    folder = str(Path(config_filepath).parent)
+    filename = Path(config_filepath).name.split(".")[0]
+    extension = Path(config_filepath).name.split(".")[1]
     saveToFile(
         folder=folder,
         filename=filename,
@@ -850,7 +850,7 @@ ASAB_tenant = Tenant(
     end_run_time = tenant_config["end_run_time"],
     operators = [User(**tenant_config["operator"])],
     tenant_user = User(**tenant_config["tenant_user"]),
-    tenant_uuid = "6216fbdc-7bce-4397-bf1d-490cd92d02b7"
+    tenant_uuid = "44e7fdd7-8f77-4018-8345-0ab746fe7517"
 )
 
 logger_ASAB_tenant.info(f"general metadata: \n {ASAB_tenant.general_meta}")
