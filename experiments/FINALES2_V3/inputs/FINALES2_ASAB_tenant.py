@@ -83,6 +83,7 @@ def update_vial_status(
     folder = str(Path(config_filepath).parent)
     filename = Path(config_filepath).name.split(".")[0]
     extension = Path(config_filepath).name.split(".")[1]
+    print(folder, "\n", filename, "\n", extension)
     saveToFile(
         folder=folder,
         filename=filename,
@@ -90,7 +91,8 @@ def update_vial_status(
         data=f"{config_var} = {str(live_config)}"
     )
 
-    logger.info(f"Updated status of {vial} to be {new_status}.")
+    new_live_config = get_live_config(logger, filepath=config_filepath, config_var=config_var)
+    logger.info(f"Updated status of {vial} to be {new_live_config['vial_status'][vial][-1][1]}.")
 
 
 ########################################################################################
