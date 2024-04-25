@@ -153,14 +153,11 @@ def get_chemicals_limits(solutionsDict:dict, pumpsDict:dict, chemicalsDict:dict)
                 output_fraction="volPerVol"
                 )
 
-            fractions_max = fractions_info_max[2]   # TODO: include limitations due to flow of syringes
-            
-            # fractions_min = fractions_info_min[2]   # TODO: include limitations due to flow of syringes
+            fractions_max = fractions_info_max[2]
 
             fraction_max = fractions_max.get(chemical, 0.0)
             if chemicalsDict[chemical].name == "EMC":
-                fraction_min = 0.4 # updated on 16.10.2023 to avoid the code requesting a formulation at the limit and delivering something different #0.35 # based on https://iopscience.iop.org/article/10.1149/1.1393419/pdf figure 3 at 20 °C;
-                # the actual acceptable fraction should be lower due to the addition of LiPF6, so this is only a rough estimate
+                fraction_min = 0.4
             else:
                 fraction_min = 0.0
 
@@ -313,37 +310,7 @@ def mix_ratio_to_formulation(mixing_ratio:dict, fraction_type:str) -> list:
     return formulation
 
 
-# # define the methods to run experiments
-# def density_viscosity_measurement(parameters:dict):
-#     # TODO: Ensure, that the fraction type for all chemicals is the same!!!
-#     mixRatio_request, mixRatio_vol, calcMix_request, flows_actual, pumpsFlows = CetoniDevice_action.mix(
-#             mixingRatio={
-#                 component["chemical"]["InChIKey"]: component["fraction"]
-#                 for component in parameters["formulation"]
-#                 },
-#             fraction=parameters["formulation"][0]["fraction_type"],
-#             pumps=pumpsDict,
-#             valves=valvesDict
-#             )
-#     actualFlows = CetoniDevice_action.provideSample(
-#             measurementtype="densiVisco",
-#             sample_node="M1.0",
-#             pumpsFlows=pumpsFlows,
-#             pumps=pumpsDict,
-#             valves=valvesDict
-#             )
-#     densiVisco_action.measure(sampleName=uuid4(), method="Lovis-DMA_MultiMeasure_20")
-#     CetoniDevice_action.drainSample(
-#             measurementtype="densiVisco",
-#             pump="F0.0",
-#             repeats=3,
-#             pumps=pumpsDict,
-#             valves=valvesDict
-#             )
-#     density_result = densiVisco_action.retrieveData()
-#     return density_result
-
-
+# define the methods to run experiments
 def conductivity_measurement(
     parameters:dict,
     sample_name:str,
@@ -647,12 +614,8 @@ def run_ASAB(input_request:RequestInfo):
             parameters["vial"] = free_vial
             update_vial_status(vial=free_vial, new_status=f"reserved_{request_ID}", logger=runLogger)
         else:
-            raise ValueError("No free vials available, mixture not possible.")  # TODO: Find a smarter way to handle this situation, so that it does not break the tenant.
+            raise ValueError("No free vials available, mixture not possible.")
         result = formulate(parameters=parameters, sample_name=sample_name, request_ID=request_ID)
-    # if method=="vibrating_tube_densimetry":
-    #     result = density_viscosity_measurement(parameters=parameters)
-    # elif method=="rolling_ball_viscosimetry":
-    #     result = density_viscosity_measurement(parameters=parameters)
     return result
 
 def prepare_results_ASAB(request:dict, data:Any):
@@ -759,26 +722,6 @@ def prepare_results_ASAB(request:dict, data:Any):
 ########################################################################################
 
 # collect all the information required for the tenant
-# density_method = Method(
-#     name = "vibrating_tube_densimetry",
-#     quantity = "density",
-#     parameters = ["formulation", "temperature"],
-#     limitations = {
-#     "formulation": formulation_limits,
-#     "temperature": [{"min": 298.15, "max": 298.15}]
-#     }
-# )
-
-# viscosity_method = Method(
-#     name = "rolling_ball_viscosimetry",
-#     quantity = "viscosity",
-#     parameters = ["formulation", "temperature"],
-#     limitations = {
-#         "formulation": formulation_limits,
-#         "temperature": [{"min": 298.15, "max": 298.15}]
-#     }
-# )
-
 conductivity_method = Method(
     name = "two_electrode",
     quantity = "conductivity",
@@ -812,16 +755,6 @@ logger_ASAB_tenant.info(f"electrolyte method: \n {electrolyte_method}")
 ########################################################################################
 
 ASAB_quantities = {
-    # "density": Quantity(
-    # name = density_method.quantity,
-    # methods = {density_method.name: density_method},
-    # is_active = True
-    # ),
-    # "viscosity":  Quantity(
-    # name = viscosity_method.quantity,
-    # methods = {viscosity_method.name: viscosity_method},
-    # is_active = True
-    # ),
     "conductivity": Quantity(
     name = conductivity_method.quantity,
     methods = {conductivity_method.name: conductivity_method},
