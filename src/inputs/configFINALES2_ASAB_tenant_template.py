@@ -58,8 +58,8 @@ config["CetoniDeviceDriver"] =  {
                                     "configPath": "<path to the configuration file for"
                                         "the formulation unit of ASAB>",
                                     "syringeConfig": {
-                                        <dictionary stating the volume of the syringes
-                                        using key e.g. "A0.0" and value e.g. "10_mL">
+                                        "<dictionary stating the volume of the syringes"
+                                        "using key e.g. 'A0.0' and value e.g. '10_mL'>"
                                         },
                                     "valvePositionDict": str(
                                         Path(runFolder).joinpath(
@@ -67,8 +67,8 @@ config["CetoniDeviceDriver"] =  {
                                                 "valvePositionDict.py"
                                             )
                                         ),
-                                    "flow": <float specifying the maximum
-                                        total flow rate in mL/s>,
+                                    "flow": "<float specifying the maximum"
+                                        "total flow rate in mL/s>",
                                     "simulateBalance": simulationBalance,
                                 }
 
@@ -77,11 +77,11 @@ config["CetoniDevice"] =    {
                                 "gas": "<the node, where the ambient can be accessed>",
                                 "pathsToClean": [],
                                 "measureVolumes": {
-                                    "densiVisco": <volume needed for a density
-                                        and viscosity measurement in mL>,
-                                    "nmr": <volume needed for an NMR measurement in mL>,
-                                    "electrochemistry": <volume needed for an
-                                        electrochemical measurement in mL>
+                                    "densiVisco": "<volume needed for a density"
+                                        "and viscosity measurement in mL>",
+                                    "nmr": "<volume needed for an NMR measurement in mL>",
+                                    "electrochemistry": "<volume needed for an"
+                                        "electrochemical measurement in mL>"
                                     },
                                 "pickUpNode": "<node, where the formulated sample "
                                     "should be picked up>",
@@ -90,18 +90,18 @@ config["CetoniDevice"] =    {
                             }
 
 config["densiViscoDriver"] = {
-                            "inputFolder": <path to the directory, where inputs for 
-                                density and viscosity measurements are placed>,
-                            "outputFolder": <path to the directory, where outputs for 
-                                density and viscosity measurements shall be placed>
+                            "inputFolder": "<path to the directory, where inputs for" 
+                                "density and viscosity measurements are placed>",
+                            "outputFolder": "<path to the directory, where outputs for" 
+                                "density and viscosity measurements shall be placed>"
                         }
 
 
 config["densiVisco"] = {
-                            "inputFolder": <path to the directory, where inputs for 
-                                density and viscosity measurements are placed>,
-                            "outputFolder": <path to the directory, where outputs for 
-                                density and viscosity measurements shall be placed>
+                            "inputFolder": "<path to the directory, where inputs for" 
+                                "density and viscosity measurements are placed>",
+                            "outputFolder": "<path to the directory, where outputs for" 
+                                "density and viscosity measurements shall be placed>"
                         }
 
 config["syringes"] =    {
@@ -131,8 +131,8 @@ config["graph"] =   {
 
 config["ArduinoDriver"] =   {
                                 "Arduino":  [{
-                                                "ArduinoNo": <number to identify
-                                                    the Arduino>,
+                                                "ArduinoNo": "<number to identify"
+                                                    "the Arduino>",
                                                 "serialPort": '<COM port for the Arduino>',
                                                 "settings": {
                                                     'baudrate': 9600,
@@ -141,19 +141,19 @@ config["ArduinoDriver"] =   {
                                                 "simulated": simulationArduino
                                             }],
                                 "ArduinoRelay": [{
-                                                    "relayNo": <relay number for
-                                                        the Arduino>,
-                                                    "ArduinoNo": <number to identify
-                                                        the Arduino>,
+                                                    "relayNo": "<relay number for"
+                                                        "the Arduino>",
+                                                    "ArduinoNo": "<number to identify"
+                                                        "the Arduino>",
                                                 }],
                                 "ArduinoValve": [{
                                                     "name": '<name for the valve>',
-                                                    "positions": [<available positions for the valve
-                                                         for the valve>],
-                                                    "ArduinoNo": <number to identify
-                                                        the Arduino>,
-                                                    "relayNo": <relay number for
-                                                        the Arduino>
+                                                    "positions": ["<available positions for the valve"
+                                                         "for the valve>"],
+                                                    "ArduinoNo": "<number to identify"
+                                                        "the Arduino>",
+                                                    "relayNo": "<relay number for"
+                                                        "the Arduino>"
                                                 }]
                             }
 
@@ -183,5 +183,5 @@ config["PalmsensDriver"] = {
 }
 
 config["electrochemistry"] = {
-    "cell_constant": <float value of the cell constant in cm**-1>
+    "cell_constant": "<float value of the cell constant in cm**-1>"
 }
